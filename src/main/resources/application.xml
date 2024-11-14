@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+      xmlns:context="http://www.springframework.org/schema/context"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-4.0.xsd"
+>
+    <!--подключение файла properties через создание бина PropertySourcesPlaceholderConfigurer СПОСОБ №1-->
+    <context:property-placeholder location="classpath:application.properties"/>
+
+    <!--подключение файла properties через создание бина PropertySourcesPlaceholderConfigurer СПОСОБ №2-->
+    <!--
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="locations" value="classpath:application.properties"/>
+    </bean> -->
 
     <!--описание бина driver не зависит не от кого-->
     <bean id="driver" class="java.lang.String">
-        <constructor-arg type="java.lang.String" value="PostgresDriver"/>
+        <constructor-arg type="java.lang.String" value="${db.driver}"/>
     </bean>
 
     <!--описание бина connectionPool  -> для примера некоторые поля ависят от бина driver-->
-    <bean id="pool1" name="p1,p3,p4" class="com.dmdevstudy.lessons.database.pool.ConnectionPool">
-        <constructor-arg name="username" type="java.lang.String" ref="driver"/>
-        <constructor-arg index="1" name="poolSize" type="java.lang.Integer" value = "10"/>
+    <bean id="pool1" name="p1,p3,p4" class="com.dmdevstudy.lessons.database.pool.ConnectionPool"
+          init-method="init"
+          destroy-method="destroy">
+        <constructor-arg name="username" type="java.lang.String" value="${db.username}"/>
+        <constructor-arg index="1" name="poolSize" type="java.lang.Integer" value = "${db.pool.size}"/>
         <constructor-arg name="args" type="java.util.List">
             <list>
                 <value>--arg1=value1</value>
@@ -25,13 +40,18 @@
         <!--инжектим зависимость через сеттер тэг property -->
         <property name="properties">
             <map>
-                <entry key="url" value-ref="driver"/>
-                <entry key="password" value="1234"/>
+                <!--задание свойств через java expression language $ -->
+                <entry key="url" value="${db.url}}"/>
+                <entry key="password" value="${db.password}"/>
+                <!--задание свойств через SpEL  # можно вызыват действия и методы других бинов-->
+                <entry key="SpEL_bool" value="#{driver.length()>10}"/>
+                <entry key="SpEL_string" value="#{driver.substring(3)}"/>
+                <entry key="SpEL_char" value="#{driver.charAt(3)}"/>
+                <entry key="currentUser" value="#{systemProperties['user.name']}"/>
+                <entry key="hosts" value="#{'${db.hosts}'.split(',')}"/>
             </map>
         </property>
     </bean>
-
-
 
     <!--описание бина companyRepository зависимости через фабричный метод-->
     <bean id="companyRepository" class="com.dmdevstudy.lessons.service.CompanyRepository" factory-method="of">
