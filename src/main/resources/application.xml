@@ -3,7 +3,12 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!--описание бина connectionPool-->
+    <!--описание бина driver не зависит не от кого-->
+    <bean id="driver" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="PostgresDriver"/>
+    </bean>
+
+    <!--описание бина connectionPool  -> для примера некоторые поля ависят от бина driver-->
     <bean id="pool1" name="p1,p3,p4" class="com.dmdevstudy.lessons.database.pool.ConnectionPool">
         <constructor-arg name="username" type="java.lang.String" ref="driver"/>
         <constructor-arg index="1" name="poolSize" type="java.lang.Integer" value = "10"/>
@@ -15,17 +20,18 @@
             </list>
         </constructor-arg>
         <constructor-arg name="properties" type="java.util.Map">
+            <null/>
+        </constructor-arg>
+        <!--инжектим зависимость через сеттер тэг property -->
+        <property name="properties">
             <map>
                 <entry key="url" value-ref="driver"/>
                 <entry key="password" value="1234"/>
             </map>
-        </constructor-arg>
+        </property>
     </bean>
 
-    <!--описание бина driver-->
-    <bean id="driver" class="java.lang.String">
-        <constructor-arg type="java.lang.String" value="PostgresDriver"/>
-    </bean>
+
 
     <!--описание бина companyRepository зависимости через фабричный метод-->
     <bean id="companyRepository" class="com.dmdevstudy.lessons.service.CompanyRepository" factory-method="of">
