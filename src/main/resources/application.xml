@@ -7,6 +7,11 @@
       http://www.springframework.org/schema/context
       http://www.springframework.org/schema/context/spring-context-4.0.xsd"
 >
+    <!--подключение кастомного BeanFactoryPostProcessor -->
+    <bean class="com.dmdevstudy.lessons.bfpp.LogBeanFactoryPostProcessor"/>
+    <bean class="com.dmdevstudy.lessons.bfpp.VerifyPropertyBeanFactoryPostProcessor"/>
+
+
     <!--подключение файла properties через создание бина PropertySourcesPlaceholderConfigurer СПОСОБ №1-->
     <context:property-placeholder location="classpath:application.properties"/>
 
