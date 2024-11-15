@@ -7,7 +7,11 @@
       http://www.springframework.org/schema/context
       http://www.springframework.org/schema/context/spring-context-4.0.xsd"
 >
-    <!--подключение кастомного BeanFactoryPostProcessor -->
+    <!--чтобы работали аннотации нужно подключить  CommonAnnotationBeanPostProcessor-->
+    <context:annotation-config/>
+    <!--способ 2 <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>-->
+
+    <!--подключение кастомных BeanFactoryPostProcessor -->
     <bean class="com.dmdevstudy.lessons.bfpp.LogBeanFactoryPostProcessor"/>
     <bean class="com.dmdevstudy.lessons.bfpp.VerifyPropertyBeanFactoryPostProcessor"/>
 
@@ -15,21 +19,13 @@
     <!--подключение файла properties через создание бина PropertySourcesPlaceholderConfigurer СПОСОБ №1-->
     <context:property-placeholder location="classpath:application.properties"/>
 
-    <!--подключение файла properties через создание бина PropertySourcesPlaceholderConfigurer СПОСОБ №2-->
-    <!--
-    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="locations" value="classpath:application.properties"/>
-    </bean> -->
-
     <!--описание бина driver не зависит не от кого-->
     <bean id="driver" class="java.lang.String">
         <constructor-arg type="java.lang.String" value="${db.driver}"/>
     </bean>
 
     <!--описание бина connectionPool  -> для примера некоторые поля ависят от бина driver-->
-    <bean id="pool1" name="p1,p3,p4" class="com.dmdevstudy.lessons.database.pool.ConnectionPool"
-          init-method="init"
-          destroy-method="destroy">
+    <bean id="pool1" name="p1,p3,p4" class="com.dmdevstudy.lessons.database.pool.ConnectionPool">
         <constructor-arg name="username" type="java.lang.String" value="${db.username}"/>
         <constructor-arg index="1" name="poolSize" type="java.lang.Integer" value = "${db.pool.size}"/>
         <constructor-arg name="args" type="java.util.List">
