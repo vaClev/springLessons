@@ -1,7 +1,7 @@
 package com.dmdevstudy.lessons;
 
 import com.dmdevstudy.lessons.database.pool.ConnectionPool;
-import com.dmdevstudy.lessons.service.CompanyRepository;
+import com.dmdevstudy.lessons.database.repository.CompanyRepository;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

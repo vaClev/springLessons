@@ -1,9 +1,11 @@
-package com.dmdevstudy.lessons.service;
+package com.dmdevstudy.lessons.database.repository;
 
+import com.dmdevstudy.lessons.bpp.InjectBean;
 import com.dmdevstudy.lessons.database.pool.ConnectionPool;
 
 public class CompanyRepository {
-    private final ConnectionPool connectionPool;
+    @InjectBean
+    private ConnectionPool connectionPool;
     private CompanyRepository(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }

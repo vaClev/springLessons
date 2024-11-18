@@ -1,5 +1,6 @@
 package com.dmdevstudy.lessons.service;
 
+import com.dmdevstudy.lessons.database.repository.CompanyRepository;
 import com.dmdevstudy.lessons.database.repository.UserRepository;
 
 public class UserService {
